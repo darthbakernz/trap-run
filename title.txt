@@ -1,0 +1,11 @@
+# title screen text. one line per pitch:  HEADLINE | subtitle
+# a random one is picked each time the page loads.
+# button = <label on the start button>
+button = SEND IT
+
+OH THAT'S AN ARB        | free money just sitting there, bottom right. go and get it.
+FREE CASH DETECTED      | loose notes on the floor, bottom right. walk over and take it.
+NOBODY'S PICKED IT UP   | a whole pile, just lying there, slightly right. go bend down.
+ZERO RISK PICKUP        | it's cash. it's on the ground. it's to your right. move.
+THE FLOOR IS PAYING     | stacks sitting there unguarded, bottom right. walk right, collect.
+EASIEST BAG EVER        | no trade, no hedge, just money on the ground. go and get it.

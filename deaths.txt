@@ -1,0 +1,21 @@
+# trap number = name shown mid-screen when it kills you  |  optional taunt
+# numbered in the order you meet them on the winning route
+1  = MISSING MARKET DATA | but we're data driven
+2  = ACCESS REQUEST PENDING   | ticket open since 2020
+3  = OUT OF DISK   | 500GB is enough for everyone
+4  = QUEUED SINCE TUESDAY | grads running grid searches
+5  = COMPLIANCE MEETING   | just checking we're above board
+6  = SPOT INSTANCE EVICTED | bezos says, thanks for the cash
+7  = AI SLOP           | it hallucinated a way
+8  = OLD HARDWARE  | but lets still trim cables
+9  = PRE-TRADE CHECKS | 40us to say maybe
+10 = POSITION LIMIT    | stay small up here
+11 = GLOBAL REORG   | twice the paperwork, half the productivity
+12 = CONNECTIVITY DELAYED | it's only been 2 years
+13 = MARGIN CALL       | you heard it coming
+14 = BLOCKED BY LEGAL  | this way is closed
+15 = TOOO MANY TRADES  | can you be less successful?
+16 = VIRTUAL DESKTOPS MANDATED | but the cloud is the future
+17 = DRAWDOWN          | a soft landing it was not
+18 = FINAL SIGN-OFF    | alpha decayed 6 months ago
+0  = OFF THE ORG CHART | nobody catches you
