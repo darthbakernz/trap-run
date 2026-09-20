@@ -75,7 +75,9 @@ const NAMES_FALLBACK=`# trap number = name shown mid-screen when it kills you  |
 const TITLE_FALLBACK=`# title screen text. one line per pitch:  HEADLINE | subtitle
 # a random one is picked each time the page loads.
 # button = <label on the start button>
+# again  = <label on the win-screen restart button>
 button = SEND IT
+again = RUN IT BACK
 
 OH THAT'S AN ARB        | free money just sitting there, bottom right. go and get it.
 FREE CASH DETECTED      | loose notes on the floor, bottom right. walk over and take it.
@@ -89,6 +91,7 @@ const GRAV=0.55,SPD=3.2,CSPD=1.4,JV=-11.2;
 const PW=24,PH=40,CH=20;
 const FLAG={x:905,y:G-50,w:30,h:50};
 const TITLE_H=330,START_BTN={x:W/2-90,y:210,w:180,h:42};
+const AGAIN_BTN={x:W/2-110,y:H/2+62,w:220,h:44};
 
 // ---- level geometry ----------------------------------------------------
 // tiers: ground G, mid ledge y=300, high ledge y=150
@@ -191,7 +194,7 @@ const WIN_LINES=[
   ['SIR, THIS IS A CASINO','and you just beat the house']];
 let winLine=WIN_LINES[0];
 const TITLE_LINES=[["OH THAT'S AN ARB",'free money just sitting there, bottom right. go and get it.']];
-let startLabel='SEND IT';
+let startLabel='SEND IT',againLabel='RUN IT BACK';
 function parseTitles(t){          // title.txt: HEADLINE | subtitle, plus button = LABEL
   const out=[];
   for(const line of t.split('\n')){
@@ -199,6 +202,8 @@ function parseTitles(t){          // title.txt: HEADLINE | subtitle, plus button
     if(!s||s[0]==='#')continue;
     const b=s.match(/^button\s*=\s*(.+)$/i);
     if(b){startLabel=b[1].trim();continue;}
+    const a=s.match(/^again\s*=\s*(.+)$/i);
+    if(a){againLabel=a[1].trim();continue;}
     const m=s.match(/^([^|]+?)\s*(?:\|\s*(.*))?$/);
     if(m)out.push([m[1],m[2]||'']);}
   if(!out.length)return;
@@ -222,6 +227,7 @@ function setMode(v){
   log(MODES[easy][0]+' -- '+MODES[easy][1]);
 }
 let p,deaths=0,launched=0,won=0,tick=0,banner=null,bannerT=0,t0=Date.now();
+function restartRun(){if(won){won=0;deaths=0;t0=Date.now();for(const q of T)q.seen=0;}reset();}
 function reset(){
   p={x:40,y:G-PH,vx:0,vy:0,h:PH,ground:1,dead:0,jumpHeld:0,face:1,pad:0,cursed:null};launched=0;
   for(const q of T){q.on=0;q.gone=0;q.grow=0;q.timer=-1;q.vis=0;q.pop=0;if(q.kind==='arrow')q.x=1000;}
@@ -680,7 +686,10 @@ function draw(){
     x.fillStyle='#9fe8b4';x.font='16px monospace';
     x.fillText(winLine[1],W/2,H/2+12);
     x.fillStyle='#cfd6e4';x.font='16px monospace';
-    x.fillText(deaths+' deaths, '+((Date.now()-t0)/1000|0)+'s  --  press R',W/2,H/2+44);
+    x.fillText(deaths+' deaths, '+((Date.now()-t0)/1000|0)+'s',W/2,H/2+44);
+    button(AGAIN_BTN,againLabel);
+    x.fillStyle='#63708a';x.font='12px monospace';
+    x.fillText('or press R',W/2,AGAIN_BTN.y+AGAIN_BTN.h+20);
     x.textAlign='left';}
   if(title)titleCard();
 }
@@ -688,6 +697,15 @@ function fitText(t,y,size,weight,max){     // shrink until it fits, never wrap
   let sz=size;
   do{x.font=weight+sz+'px monospace';if(x.measureText(t).width<=max)break;sz--;}while(sz>9);
   x.fillText(t,W/2,y);
+}
+function button(b,label){         // glowing green box: start screen and win screen share it
+  const glow=(Math.sin(tick/14)+1)/2;
+  x.fillStyle='rgba(28,40,32,.95)';x.fillRect(b.x,b.y,b.w,b.h);
+  x.strokeStyle='rgba(108,214,108,'+(.45+glow*.55)+')';x.lineWidth=2;
+  x.strokeRect(b.x+1,b.y+1,b.w-2,b.h-2);
+  x.fillStyle='#6cd66c';x.textAlign='center';
+  let sz=20;do{x.font='bold '+sz+'px monospace';if(x.measureText(label).width<=b.w-20)break;sz--;}while(sz>10);
+  x.fillText(label,b.x+b.w/2,b.y+b.h/2+7);
 }
 function titleCard(){                 // curtain over the top: the floor, bub and the cash stay on show
   if(!draw.tc){draw.tc=x.createLinearGradient(0,0,0,TITLE_H);
@@ -699,12 +717,7 @@ function titleCard(){                 // curtain over the top: the floor, bub an
   x.fillStyle='#9fe8b4';fitText(titleLine[1],152,16,'',W-100);
   x.fillStyle='#8391a8';x.font='13px monospace';
   x.fillText('arrows / WASD to move, space to jump, R to restart',W/2,182);
-  const b=START_BTN,glow=(Math.sin(tick/14)+1)/2;
-  x.fillStyle='rgba(28,40,32,.95)';x.fillRect(b.x,b.y,b.w,b.h);
-  x.strokeStyle='rgba(108,214,108,'+(.45+glow*.55)+')';x.lineWidth=2;
-  x.strokeRect(b.x+1,b.y+1,b.w-2,b.h-2);
-  x.fillStyle='#6cd66c';x.font='bold 20px monospace';
-  x.fillText(startLabel,b.x+b.w/2,b.y+29);
+  button(START_BTN,startLabel);
   x.fillStyle='#63708a';x.font='12px monospace';
   x.fillText('click it. what is the worst that happens.',W/2,b.y+b.h+22);
   x.textAlign='left';
@@ -762,12 +775,14 @@ document.getElementById('god').onclick=()=>{toggleGod();cv.focus();};
 (function(){const el=document.getElementById('c');      // title starts on the button, nothing else
   if(!el||!el.addEventListener)return;
   const hit=e=>{
-    if(!title)return;
+    if(!title&&!won)return;
     const r=el.getBoundingClientRect();
-    const mx=(e.clientX-r.left)*W/r.width,my=(e.clientY-r.top)*H/r.height,b=START_BTN;
-    if(mx>=b.x&&mx<=b.x+b.w&&my>=b.y&&my<=b.y+b.h)startGame();};
+    const mx=(e.clientX-r.left)*W/r.width,my=(e.clientY-r.top)*H/r.height;
+    const on=b=>mx>=b.x&&mx<=b.x+b.w&&my>=b.y&&my<=b.y+b.h;
+    if(title){if(on(START_BTN))startGame();return;}
+    if(on(AGAIN_BTN)){sfx('pad');restartRun();}};
   el.addEventListener('mousedown',hit);
-  el.addEventListener('touchstart',e=>{if(title&&e.touches[0]){e.preventDefault();hit(e.touches[0]);}});})();
+  el.addEventListener('touchstart',e=>{if((title||won)&&e.touches[0]){e.preventDefault();hit(e.touches[0]);}});})();
 (function(){const b=document.getElementById('fs');        // phones: chrome eats half the landscape
   if(!b||!b.addEventListener)return;
   const root=document.documentElement,
@@ -789,7 +804,7 @@ addEventListener('keydown',e=>{if(e.code==='Space')e.preventDefault();audioStart
   if(e.code==='KeyE'){setMode(!easy);return;}
   if(e.code==='KeyG'&&devOn){toggleGod();return;}
   stopDemo();keys[e.code]=1;
-  if(e.code==='KeyR'){if(won){won=0;deaths=0;t0=Date.now();for(const q of T)q.seen=0;}reset();}});
+  if(e.code==='KeyR')restartRun();});
 addEventListener('keyup',e=>keys[e.code]=0);
 document.querySelectorAll('#pad button').forEach(b=>{
   const k=b.dataset.k;

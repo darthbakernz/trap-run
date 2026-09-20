@@ -1,7 +1,9 @@
 # title screen text. one line per pitch:  HEADLINE | subtitle
 # a random one is picked each time the page loads.
 # button = <label on the start button>
+# again  = <label on the win-screen restart button>
 button = SEND IT
+again = RUN IT BACK
 
 OH THAT'S AN ARB        | free money just sitting there, bottom right. go and get it.
 FREE CASH DETECTED      | loose notes on the floor, bottom right. walk over and take it.
