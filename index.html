@@ -77,7 +77,7 @@ const TITLE_FALLBACK=`# title screen text. one line per pitch:  HEADLINE | subti
 # button = <label on the start button>
 # again  = <label on the win-screen restart button>
 button = SEND IT
-again = RUN IT BACK
+again = BUY BACK IN
 
 OH THAT'S AN ARB        | free money just sitting there, bottom right. go and get it.
 FREE CASH DETECTED      | loose notes on the floor, bottom right. walk over and take it.
@@ -194,7 +194,7 @@ const WIN_LINES=[
   ['SIR, THIS IS A CASINO','and you just beat the house']];
 let winLine=WIN_LINES[0];
 const TITLE_LINES=[["OH THAT'S AN ARB",'free money just sitting there, bottom right. go and get it.']];
-let startLabel='SEND IT',againLabel='RUN IT BACK';
+let startLabel='SEND IT',againLabel='BUY BACK IN';
 function parseTitles(t){          // title.txt: HEADLINE | subtitle, plus button = LABEL
   const out=[];
   for(const line of t.split('\n')){
