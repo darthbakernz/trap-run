@@ -744,6 +744,8 @@ function audioStart(){                        // browsers need a gesture first
   music=new Audio('music.mp3');music.loop=true;music.volume=.16;
 }
 const MOVE={ArrowLeft:1,ArrowRight:1,ArrowUp:1,ArrowDown:1,Space:1,KeyW:1,KeyA:1,KeyD:1,KeyS:1};
+// wasd feeds the arrow keys the physics already reads, so there is one set of inputs
+const ALIAS={KeyA:'ArrowLeft',KeyD:'ArrowRight',KeyS:'ArrowDown',KeyW:'Space'};
 function musicStart(){                        // the track kicks in on your first step
   audioStart();
   if(music&&!muted&&music.paused)music.play().catch(()=>{});
@@ -803,9 +805,9 @@ addEventListener('keydown',e=>{if(e.code==='Space')e.preventDefault();audioStart
   if(e.code==='KeyM'){toggleMute();return;}
   if(e.code==='KeyE'){setMode(!easy);return;}
   if(e.code==='KeyG'&&devOn){toggleGod();return;}
-  stopDemo();keys[e.code]=1;
+  stopDemo();keys[ALIAS[e.code]||e.code]=1;
   if(e.code==='KeyR')restartRun();});
-addEventListener('keyup',e=>keys[e.code]=0);
+addEventListener('keyup',e=>keys[ALIAS[e.code]||e.code]=0);
 document.querySelectorAll('#pad button').forEach(b=>{
   const k=b.dataset.k;
   const on=e=>{e.preventDefault();musicStart();keys[k]=1;},off=e=>{e.preventDefault();keys[k]=0;};
